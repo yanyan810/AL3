@@ -1,4 +1,5 @@
 #include <KamataEngine.h>
+#include "GameScene.h"
 
 using namespace KamataEngine;
 
@@ -19,6 +20,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();
 	dxCommon->Initialize(win);
+
+	// ゲームシーンのインスタンス作成
+	GameScene* gameScene = new GameScene();
+	// ゲームシーンの初期化
+	gameScene->Initialize();
 
 #pragma region 汎用機能初期化
 	// ImGuiの初期化
@@ -62,6 +68,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imguiManager->Begin();
 		// 入力関連の毎フレーム処理
 		input->Update();
+
+		// ゲームシーンの更新
+		gameScene->Update();
+
 		// 軸表示の更新
 		axisIndicator->Update();
 		// ImGui受付終了
@@ -69,6 +79,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// 描画開始
 		dxCommon->PreDraw();
+
+		// ゲームシーンの描画
+		gameScene->Draw();
+
 		// 軸表示の描画
 		axisIndicator->Draw();
 		// プリミティブ描画のリセット
@@ -84,6 +98,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	audio->Finalize();
 	// ImGui解放
 	imguiManager->Finalize();
+
+	// ゲームシーンの開放
+	delete gameScene;
+
+	// nullptrの代入
+	gameScene = nullptr;
 
 	// ゲームウィンドウの破棄
 	win->TerminateGameWindow();
